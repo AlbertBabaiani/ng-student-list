@@ -1,0 +1,1 @@
+export type PagesQuantity = 10 | 25 | 50 | 100

@@ -1,1 +1,52 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'styles/customVariables';
+
+// Basic Styles
+
+*, *::after, *::before{
+    padding: 0;
+    margin: 0;
+    
+    box-sizing: border-box;
+}
+
+// End Basic Styles
+
+
+// Fonts
+
+*:not(i){
+    font-family: 'Poppins', sans-serif;
+}
+
+// End Fonts
+
+
+// Custom Scrollbar
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 100vmax;
+    background: $blueHSL;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: $blue;
+}
+
+// Custom Scrollbar
+
+
+// Selection
+
+::selection{
+    background: red;
+}
+
+// End Selection

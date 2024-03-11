@@ -1,0 +1,36 @@
+@import '../../../styles/customVariables';
+
+header{
+    border-bottom: 1px solid #c7c8c9;
+}
+
+.custom-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2{
+        margin: 0;
+    }
+}
+
+.author{
+    text-align: center;
+    font-size: 1.2rem;
+
+    a{
+        font-weight: bold;
+        color: $gitHub;
+
+        transition: 0.2s ease;
+
+        &:focus{
+            outline: $outline;
+        }
+
+        &:hover,
+        &:focus{
+            color: $blueHSL;
+        }
+    }
+}

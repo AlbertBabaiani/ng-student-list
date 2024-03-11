@@ -1,0 +1,18 @@
+<div class="tools mt-5 mb-3">
+    <div class="quantity d-flex w-auto align-items-center">
+        <select class="form-select quantity-box me-2" [(ngModel)]="items_quantity" (change)="changeQuantity()">
+            <option *ngFor="let option of quantity_arr"> {{ option }} </option>
+        </select>
+
+        <span>
+            Entries per page
+        </span>
+
+    </div>
+
+    <div class="search d-flex align-items-center">
+        <label for="search" class="form-label me-2 mb-0 fw-medium">Search</label>
+        <input type="password" id="search" class="form-control" aria-describedby="search" placeholder="John Smith">
+    </div>
+      
+</div>

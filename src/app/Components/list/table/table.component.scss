@@ -1,0 +1,79 @@
+@import '../../../../styles/customVariables';
+
+p{
+    margin: 0;
+}
+
+table{
+    width: 100%;
+    margin: 0;
+
+    .add-user-btn{
+
+        position: relative;
+
+        padding: 0;
+
+        button{
+            position: absolute;
+            
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: $blue;
+            border: none;
+
+            transition: $colorTransition;
+
+            
+        }
+    }    
+
+    tr{
+        transition: opacity 0.2s;
+
+        &:hover .tools button{
+            opacity: 0.75;
+            
+            &:hover,
+            &:focus{
+                opacity: 1;
+            }
+
+            &:focus{
+                outline: none;
+                outline: $outline;
+            }
+        }
+
+        .gender{
+            background: #fff;
+        }
+    }
+}
+
+
+
+.tools{
+    width: 100%;
+    height: 100% !important;
+
+    display: flex;
+
+    button{
+        width: 100%;
+        height: 100%;
+
+        font-size: 1.1rem;
+
+        border: none;
+        background: transparent;
+
+        opacity: 0.5;
+
+        transition: opacity 0.2s;
+    }
+}
