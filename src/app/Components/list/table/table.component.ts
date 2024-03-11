@@ -18,6 +18,7 @@ export class TableComponent implements OnInit, OnDestroy{
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute)
 
   studentList: Student[] = []
+  studentList_subscription!: Subscription
   total_score: number = 0
 
   items_per_page: PagesQuantity = 10
@@ -26,7 +27,12 @@ export class TableComponent implements OnInit, OnDestroy{
 
   
   ngOnInit(){
-    this.studentList = this.main_service.students
+    this.studentList_subscription = this.main_service.students$.subscribe({
+      next: (students: Student[]) => {
+        this.studentList = students
+      }
+    })
+
     this.total_score = this.main_service.total_score
 
     this.activated_route_subscription = this.activatedRoute.queryParamMap.subscribe({
@@ -103,6 +109,7 @@ export class TableComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(){
     this.activated_route_subscription.unsubscribe()
+    this.studentList_subscription.unsubscribe()
   }
 }
 
