@@ -8,8 +8,37 @@
             </th>
 
             <th>N</th>
-            <th>ID</th>
-            <th>First Name</th>
+
+            <th *ngFor="let header of table_headers">
+                <span>
+                    {{ header }}
+                </span>
+
+                <button type="button" class="arrows btn focus-ring"
+                [ngClass]="change_filter_button(header)"
+                (click)="change_filter(header)"></button>
+            </th>
+
+            <!-- <th>
+                <span>
+                    ID
+                </span>
+
+                <button type="button" class="arrows btn focus-ring"
+                [ngClass]="change_filter_button('id')"
+                (click)="change_filter('id')"></button>
+
+            </th>
+
+            <th>
+                <span>
+                    First Name
+                </span>
+
+                <button type="button" class="arrows btn focus-ring"
+                [ngClass]="change_filter_button('first_name')"
+                (click)="change_filter('first_name')"></button>
+            </th>
             <th>Last Name</th>
             <th>Gender</th>
             <th>Date of Birth</th>
@@ -17,7 +46,7 @@
             <th>Points</th>
             <th>Grade</th>
             <th>Percent</th>
-            <th>Fee</th>
+            <th>Fee</th> -->
         </tr>
     </thead>
 

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PagesQuantity } from 'src/app/Models/PagesQuantity';
+import { RoutingService } from 'src/app/Services/routing.service';
 
 @Component({
   selector: 'app-filter-tools',
@@ -9,6 +10,8 @@ import { PagesQuantity } from 'src/app/Models/PagesQuantity';
   styleUrls: ['./filter-tools.component.scss']
 })
 export class FilterToolsComponent implements OnInit, OnDestroy{
+  routing_service: RoutingService = inject(RoutingService)
+
   quantity_arr: PagesQuantity[] = [10, 25, 50, 100]
   items_quantity: PagesQuantity = 10
 
@@ -20,13 +23,10 @@ export class FilterToolsComponent implements OnInit, OnDestroy{
   ngOnInit(){
     this.activated_route_subscription = this.activatedRoute.queryParamMap.subscribe({
       next: (query) =>{
-        const quantity = Number(query.get('Items')) as PagesQuantity
-
-        if(quantity === 10 || quantity === 25 || quantity === 50 || quantity === 100){
-          this.items_quantity = quantity
-        }
-        else if(query.get("Items") === '' || query.get("Items") === null || query.get("Items") === undefined){
-          this.items_quantity = 10
+        const result = this.routing_service.check_query_items(query, false)
+        
+        if(result){
+          this.items_quantity = result
         }
       }
     })
@@ -35,7 +35,7 @@ export class FilterToolsComponent implements OnInit, OnDestroy{
   
 
   changeQuantity(): void{
-    this.router.navigate([''], { queryParams: { Items: this.items_quantity } })
+    this.router.navigate([''], { queryParams: { Items: this.items_quantity }, queryParamsHandling: 'merge' })
   }
 
   ngOnDestroy(): void {

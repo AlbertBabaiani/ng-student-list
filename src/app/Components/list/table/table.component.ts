@@ -1,10 +1,13 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, takeUntil } from 'rxjs';
+
+import { Subscription } from 'rxjs';
+
 import { Courses, Courses_array } from 'src/app/Models/Courses';
 import { PagesQuantity } from 'src/app/Models/PagesQuantity';
 import { Student } from 'src/app/Models/Student';
+import { Table_Headers } from 'src/app/Models/TableHeaders';
 import { PageLogicService } from 'src/app/Services/page-logic.service';
+import { RoutingService } from 'src/app/Services/routing.service';
 
 @Component({
   selector: 'app-table',
@@ -14,53 +17,127 @@ import { PageLogicService } from 'src/app/Services/page-logic.service';
 export class TableComponent implements OnInit, OnDestroy{
   private main_service: PageLogicService = inject(PageLogicService)
 
-  private router: Router = inject(Router)
-  private activatedRoute: ActivatedRoute = inject(ActivatedRoute)
+  private routing_service: RoutingService = inject(RoutingService)
 
-  studentList: Student[] = []
-  studentList_subscription!: Subscription
+  // private router: Router = inject(Router)
+  // private activatedRoute: ActivatedRoute = inject(ActivatedRoute)
+
+  // Students List
+  private _studentList: Student[] = []
+
+  get studentList(): Student[]{
+    return this._studentList
+  }
+
+  private studentList_subscription!: Subscription
   total_score: number = 0
+  // End Students List
 
+
+  // Page Items
   items_per_page: PagesQuantity = 10
-
-  private activated_route_subscription!: Subscription
+  items_per_page_subscription!: Subscription
+  // private activated_route_subscription!: Subscription
+  // End Page Items
 
   
   ngOnInit(){
     this.studentList_subscription = this.main_service.students$.subscribe({
       next: (students: Student[]) => {
-        this.studentList = students
+        this._studentList = students
       }
     })
 
     this.total_score = this.main_service.total_score
 
-    this.activated_route_subscription = this.activatedRoute.queryParamMap.subscribe({
-      next: (query) =>{
-        const quantity: number = Number(query.get('Items'))
-
-        console.log(query.get("Items"))
-
-        if(quantity === 10 || quantity === 25 || quantity === 50 || quantity === 100){
-          this.items_per_page = quantity
-        }
-        else if(query.get("Items") === '' || query.get("Items") === null || query.get("Items") === undefined){
-          this.items_per_page = 10
-          this.router.navigate([''], {queryParams: {Items: 10} });
-        }
-        else{
-          this.router.navigateByUrl('/error');
-        }
+    this.items_per_page_subscription = this.routing_service.items_per_page$.subscribe({
+      next: (pages: PagesQuantity) => {
+        this.items_per_page = pages
       }
     })
+    // this.activated_route_subscription = this.activatedRoute.queryParamMap.subscribe({
+    //   next: (query) =>{
+    //     const queryParams = this.activatedRoute.snapshot.queryParamMap;
+
+    //     const error_free: boolean = check_query_strings(queryParams)
+
+    //     if(error_free){
+    //       const result = check_query_items(query, this.router, this.activatedRoute)
+
+    //       if(result){
+    //         this.items_per_page = result
+    //       }
+    //     }
+    //     else{
+    //       this.router.navigateByUrl('/error');
+    //     }
+
+    //   }
+    // })
   }
 
 
-  isAdding: boolean = false
 
-  courses_list: Courses[] = Courses_array
+  // Course List
+  courses_list: Courses[] = Courses_array // To display in the template
+  // End Course List
 
+
+  // Table Headers
+  readonly table_headers: string[] = Table_Headers
+  // End Table Headers
+
+
+  // Filter
+  filter_column: string = ''
+  filter_type: 'ascending' | 'descending' | '' = ''
+
+  change_filter_button(unformated_column: string): {[key: string]: boolean}{
+    const column: string = unformated_column.replace(' ', '').toLowerCase()
+    return {
+      'active-1': this.filter_column === column && this.filter_type === 'ascending',
+      'active-2': this.filter_column === column && this.filter_type === 'descending'
+    }
+  }
+
+  change_filter(unformated_column: string): void{
+    const column: string = unformated_column.replace(/\s/g, '').toLowerCase()
+
+    if(this.filter_column === column){
+     this.change_filter_type()
+    }
+
+    else{
+      this.filter_column = column
+      this.filter_type = 'ascending'
+      this.routing_service.set_filter_route(this.filter_column,this.filter_type)
+    }
+  }
+
+  change_filter_type(): void{
+    switch(this.filter_type){
+      case 'ascending': {
+        this.filter_type='descending'
+        this.routing_service.set_filter_route(this.filter_column,this.filter_type)
+        break
+      }
+      case 'descending': {
+        this.filter_type=''
+        this.filter_column = ''
+        this.routing_service.remove_filter_route(this.items_per_page)
+        break
+      }
+      // default: {
+      //   console.log('gg')
+      //   this.router.navigateByUrl('/error');
+      //   break
+      // }
+    }
+  }
+  // End Filter
+  
   // New Student
+  isAdding: boolean = false
 
   chosen_gender: string = ''
   chosen_course: Courses | '' = ''
@@ -71,11 +148,6 @@ export class TableComponent implements OnInit, OnDestroy{
   @ViewChild('dob') add_date_of_birth!: ElementRef
   @ViewChild('points') add_points!: ElementRef
   @ViewChild('fee') add_fee!: ElementRef
-
-  // End New Student
-
- 
-
 
   addNewStudent(){
     if(this.chosen_course){
@@ -101,15 +173,18 @@ export class TableComponent implements OnInit, OnDestroy{
     this.isAdding = false
   }
 
+  // End New Student
 
+
+  // Delete Student
   deleteStudent(id: string){
     this.main_service.deleteStudent(id)
   }
+  // End Delete Student
 
 
   ngOnDestroy(){
-    this.activated_route_subscription.unsubscribe()
+    // this.activated_route_subscription.unsubscribe()
     this.studentList_subscription.unsubscribe()
   }
 }
-

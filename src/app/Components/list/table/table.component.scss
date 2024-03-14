@@ -1,5 +1,7 @@
 @import '../../../../styles/customVariables';
 
+$tableDataPadding: 1.4rem;
+
 p{
     margin: 0;
 }
@@ -7,6 +9,65 @@ p{
 table{
     width: 100%;
     margin: 0;
+
+    thead{
+        th{
+            position: relative;
+
+            padding-right: calc($tableDataPadding + 0.4rem);
+        }
+
+        .arrows{
+            height: 100%;
+            width: $tableDataPadding;
+            
+            position: absolute;
+
+            right: 0;
+            top: 0;
+
+            &::before,
+            &::after{
+                content: '▲';
+
+                position: absolute;
+
+                line-height: 0.6rem;
+                font-size: 0.9rem;
+
+                left: 50%;
+                
+                opacity: .125;
+            }
+
+            &::before{
+                top: 48%;
+                transform: translate(-50%, -100%);
+            }
+
+            &::after{
+                top: 52%;
+                transform: translateX(-50%) rotate(180deg);
+            }
+
+
+            // Active
+
+            &.active-1{
+                &::before{
+                    opacity: 0.6;
+                }
+            }
+
+            &.active-2{
+                &::after{
+                    opacity: 0.6;
+                }
+            }
+
+            // End Active
+        }
+    }
 
     .add-user-btn{
 
